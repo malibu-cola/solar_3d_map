@@ -22,6 +22,41 @@ const PERIODS = {
   Jupiter: 4333, Saturn: 10759, Uranus: 30687, Neptune: 60190,
 };
 
+/**
+ * ケプラー方程式 E - e*sin(E) = M を解く
+ * 高離心率(e≈1)でも収束する堅牢なソルバー
+ */
+function solveKepler(M, e) {
+  // 低離心率: 標準Newton-Raphson
+  if (e < 0.97) {
+    let E = M;
+    for (let iter = 0; iter < 30; iter++) {
+      const dE = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+      E -= dE;
+      if (Math.abs(dE) < 1e-12) break;
+    }
+    return E;
+  }
+
+  // 高離心率: 近放物線近似で初期値を求め、ステップ制限付きNewton法
+  const signM = M >= 0 ? 1 : -1;
+  const absM = Math.abs(M);
+
+  // E - sin(E) ≈ E³/6 (小さいE) → 初期推定: E ≈ (6*|M|)^(1/3)
+  let E = signM * Math.cbrt(6 * absM);
+
+  for (let iter = 0; iter < 100; iter++) {
+    const f = E - e * Math.sin(E) - M;
+    const fp = 1 - e * Math.cos(E);
+    let dE = f / fp;
+    // ステップ幅を制限して発散を防ぐ
+    if (Math.abs(dE) > 0.5) dE = 0.5 * Math.sign(dE);
+    E -= dE;
+    if (Math.abs(f) < 1e-14) break;
+  }
+  return E;
+}
+
 /** HelioVectorからシーン座標のVector3を返すヘルパー */
 function helioToScene(vec) {
   const { sx, sy, sz } = auToSceneVec(vec.x, vec.y, vec.z);
@@ -73,14 +108,11 @@ export function orbitalElementsToXYZ(elements, jd) {
   const n = (2 * Math.PI) / (365.25 * Math.pow(a, 1.5));
   const dt = jd - epoch;
   let M = ((M0 * Math.PI) / 180) + n * dt;
-  M = M % (2 * Math.PI);
+  // Mを[0, 2π)に正規化
+  M = ((M % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  if (M > Math.PI) M -= 2 * Math.PI; // [-π, π]に正規化
 
-  let E = M;
-  for (let iter = 0; iter < 30; iter++) {
-    const dE = (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
-    E -= dE;
-    if (Math.abs(dE) < 1e-12) break;
-  }
+  let E = solveKepler(M, e);
 
   const cosV = (Math.cos(E) - e) / (1 - e * Math.cos(E));
   const sinV = (Math.sqrt(1 - e * e) * Math.sin(E)) / (1 - e * Math.cos(E));
@@ -131,9 +163,24 @@ export function createCometOrbitLine(comet, color) {
   const steps = 360;
   const jdNow = dateToJD(new Date());
 
+  // 近放物線軌道(e > 0.99)の場合は近日点前後2年のみ描画
+  let jdStart, jdEnd;
+  if (elements.e > 0.99) {
+    // 現在に最も近い近日点時刻を計算
+    const tSincePeri = (elements.M / 360) * period;
+    let tp = elements.epoch - tSincePeri;
+    while (tp + period < jdNow + period / 2) tp += period;
+    jdStart = tp - 365;
+    jdEnd = tp + 365;
+  } else {
+    jdStart = jdNow;
+    jdEnd = jdNow + period;
+  }
+  const span = jdEnd - jdStart;
+
   const points = [];
   for (let s = 0; s <= steps; s++) {
-    const jd = jdNow + (s / steps) * period;
+    const jd = jdStart + (s / steps) * span;
     const pos = orbitalElementsToXYZ(elements, jd);
     points.push(eclipticToScene(pos));
   }
