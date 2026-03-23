@@ -60,7 +60,7 @@ export function createOrbitLine(bodyNameEn, color) {
   }
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
-  const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.4 });
+  const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.6 });
   return new THREE.Line(geometry, material);
 }
 

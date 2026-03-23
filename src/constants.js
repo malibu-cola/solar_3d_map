@@ -32,21 +32,21 @@ export function auToSceneVec(x, y, z) {
   };
 }
 
-// 天体の色と表示サイズ
+// 天体の色と表示サイズ（実際の天体の見た目に近い色）
 export const BODY_CONFIG = {
-  Sun:     { color: 0xffdd44, radius: 2.0, emissive: true },
-  Mercury: { color: 0xaaaaaa, radius: 0.4 },
-  Venus:   { color: 0xffcc66, radius: 0.6 },
-  Earth:   { color: 0x4488ff, radius: 0.65 },
-  Mars:    { color: 0xff4422, radius: 0.5 },
-  Jupiter: { color: 0xddaa66, radius: 1.4 },
-  Saturn:  { color: 0xddcc88, radius: 1.2 },
-  Uranus:  { color: 0x88ccdd, radius: 0.9 },
-  Neptune: { color: 0x4466ff, radius: 0.85 },
+  Sun:     { color: 0xfff5e0, radius: 2.0, emissive: true },
+  Mercury: { color: 0x8c7e6d, radius: 0.4 },   // 灰褐色（岩石表面）
+  Venus:   { color: 0xe8cda0, radius: 0.6 },    // 淡黄色（硫酸雲）
+  Earth:   { color: 0x2f6a9f, radius: 0.65 },   // 青（海洋）
+  Mars:    { color: 0xc1440e, radius: 0.5 },     // 赤褐色（酸化鉄）
+  Jupiter: { color: 0xc8a87a, radius: 1.4 },     // 黄褐色（縞模様の平均）
+  Saturn:  { color: 0xe0c98a, radius: 1.2 },     // 淡い金色
+  Uranus:  { color: 0x7ec8c8, radius: 0.9 },     // 淡いシアン（メタン大気）
+  Neptune: { color: 0x3f54ba, radius: 0.85 },    // 濃い青（メタン大気）
 };
 
 // 彗星の色
-export const COMET_COLOR = 0x66ffcc;
+export const COMET_COLOR = 0x88ffdd;
 
-// 軌道線の色
-export const ORBIT_COLOR = 0x335577;
+// 軌道線の色（白寄りにして視認性向上）
+export const ORBIT_COLOR = 0x8899aa;
