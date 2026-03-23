@@ -1,0 +1,147 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow: hidden;
+  background: #000;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #eee;
+}
+
+#solar-canvas {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* --- UI Overlay (top-left) --- */
+#ui-overlay {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  pointer-events: none;
+  user-select: none;
+}
+
+#title {
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+  text-shadow: 0 0 12px rgba(0, 0, 0, 0.9);
+}
+
+/* --- Time slider --- */
+#time-control {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  background: rgba(5, 5, 20, 0.6);
+  backdrop-filter: blur(6px);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#time-control label {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+#time-slider {
+  width: 220px;
+  accent-color: #4488ff;
+}
+
+#time-label {
+  font-size: 0.8rem;
+  min-width: 180px;
+  opacity: 0.9;
+}
+
+/* --- Toggles --- */
+#controls {
+  pointer-events: auto;
+  display: flex;
+  gap: 14px;
+  font-size: 0.8rem;
+  background: rgba(5, 5, 20, 0.6);
+  backdrop-filter: blur(6px);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#controls label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+
+#controls label:hover {
+  opacity: 1;
+}
+
+#controls input[type="checkbox"] {
+  accent-color: #4488ff;
+}
+
+/* --- Info panel (right) --- */
+#info-panel {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  background: rgba(8, 8, 30, 0.85);
+  border: 1px solid rgba(100, 140, 255, 0.2);
+  border-radius: 10px;
+  padding: 20px 22px;
+  width: 270px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+#info-panel.hidden {
+  display: none;
+}
+
+#info-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+#info-close:hover {
+  color: #fff;
+}
+
+#info-name {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 14px;
+  color: #aaccff;
+}
+
+#info-body {
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: #ccc;
+}
+
+#info-body strong {
+  color: #8ab4f8;
+}

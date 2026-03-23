@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>太陽系3Dマップ</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <canvas id="solar-canvas"></canvas>
+  <div id="ui-overlay">
+    <h1 id="title">太陽系3Dマップ</h1>
+    <div id="time-control">
+      <label for="time-slider">日付:</label>
+      <input type="range" id="time-slider" min="-1825" max="1825" value="0" />
+      <span id="time-label"></span>
+    </div>
+    <div id="controls">
+      <label><input type="checkbox" id="show-orbits" checked /> 軌道線</label>
+      <label><input type="checkbox" id="show-labels" checked /> ラベル</label>
+      <label><input type="checkbox" id="show-comets" checked /> 彗星</label>
+    </div>
+  </div>
+  <div id="info-panel" class="hidden">
+    <button id="info-close">&times;</button>
+    <h2 id="info-name"></h2>
+    <div id="info-body"></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

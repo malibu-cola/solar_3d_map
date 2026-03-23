@@ -1,0 +1,37 @@
+name: Fetch Solar System Data
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 毎日 01:00 UTC
+  workflow_dispatch:       # 手動実行も可能
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch planet data from Horizons API
+        run: python scripts/fetch_planets.py
+
+      - name: Fetch comet data from SBDB API
+        run: python scripts/fetch_comets.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "chore: update solar system data [automated]"
+          git push

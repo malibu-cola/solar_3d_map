@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(npx vite:*)",
+      "Bash(curl -s \"https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27499%27&OBJ_DATA=NO&MAKE_EPHEM=YES&EPHEM_TYPE=VECTORS&CENTER=%27500@10%27&START_TIME=%272026-03-23%27&STOP_TIME=%272026-03-24%27&STEP_SIZE=%271%20d%27&OUT_UNITS=%27AU-D%27\")",
+      "Bash(curl -s \"https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=1P&full-prec=true\")",
+      "Bash(python scripts/fetch_planets.py)",
+      "Bash(python scripts/fetch_comets.py)",
+      "Bash(ls dist/*.json)"
+    ]
+  }
+}
