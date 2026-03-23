@@ -4,7 +4,7 @@
 
 import * as THREE from 'three';
 import * as Astronomy from 'astronomy-engine';
-import { auToScene } from './constants.js';
+import { auToSceneVec } from './constants.js';
 
 const BODY_MAP = {
   Mercury: Astronomy.Body.Mercury,
@@ -22,6 +22,12 @@ const PERIODS = {
   Jupiter: 4333, Saturn: 10759, Uranus: 30687, Neptune: 60190,
 };
 
+/** HelioVectorからシーン座標のVector3を返すヘルパー */
+function helioToScene(vec) {
+  const { sx, sy, sz } = auToSceneVec(vec.x, vec.y, vec.z);
+  return new THREE.Vector3(sx, sy, sz);
+}
+
 /**
  * astronomy-engineで任意時刻の惑星位置(シーン座標)を返す
  */
@@ -30,11 +36,7 @@ export function getPlanetScenePosition(bodyNameEn, date) {
   if (!body) return null;
   const astroTime = Astronomy.MakeTime(date);
   const vec = Astronomy.HelioVector(body, astroTime);
-  return new THREE.Vector3(
-    auToScene(vec.x),
-    auToScene(vec.z),
-    auToScene(vec.y),
-  );
+  return helioToScene(vec);
 }
 
 /**
@@ -54,12 +56,7 @@ export function createOrbitLine(bodyNameEn, color) {
     const date = new Date(startDate.getTime() + (i / steps) * period * 86400000);
     const astroTime = Astronomy.MakeTime(date);
     const vec = Astronomy.HelioVector(body, astroTime);
-
-    points.push(new THREE.Vector3(
-      auToScene(vec.x),
-      auToScene(vec.z),
-      auToScene(vec.y),
-    ));
+    points.push(helioToScene(vec));
   }
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -110,18 +107,19 @@ export function orbitalElementsToXYZ(elements, jd) {
   return { x, y, z };
 }
 
+/** ecliptic XYZ(AU) からシーン座標Vector3を返す */
+function eclipticToScene(pos) {
+  const { sx, sy, sz } = auToSceneVec(pos.x, pos.y, pos.z);
+  return new THREE.Vector3(sx, sy, sz);
+}
+
 /**
  * 任意時刻の彗星位置(シーン座標)を返す
  */
 export function getCometScenePosition(elements, date) {
-  // Date -> JD
   const jd = dateToJD(date);
   const pos = orbitalElementsToXYZ(elements, jd);
-  return new THREE.Vector3(
-    auToScene(pos.x),
-    auToScene(pos.z),
-    auToScene(pos.y),
-  );
+  return eclipticToScene(pos);
 }
 
 /**
@@ -137,11 +135,7 @@ export function createCometOrbitLine(comet, color) {
   for (let s = 0; s <= steps; s++) {
     const jd = jdNow + (s / steps) * period;
     const pos = orbitalElementsToXYZ(elements, jd);
-    points.push(new THREE.Vector3(
-      auToScene(pos.x),
-      auToScene(pos.z),
-      auToScene(pos.y),
-    ));
+    points.push(eclipticToScene(pos));
   }
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points);

@@ -4,14 +4,32 @@
 
 // 距離スケール: AUからシーン座標への変換
 // 内惑星(< 2AU)は拡大、外惑星は圧縮して視認性を確保
-export function auToScene(au) {
-  const abs = Math.abs(au);
-  if (abs < 2) {
-    return au * 8; // 内惑星: 拡大
+// 注: 各軸独立ではなく、距離(radius)にスケールを適用して方向を保持する
+
+/**
+ * スカラー距離(AU)をシーン距離に変換する
+ */
+function scaleRadius(r) {
+  if (r < 2) {
+    return r * 8;
   }
-  // 外惑星: 対数的に圧縮
-  const sign = Math.sign(au) || 1;
-  return sign * (16 + Math.log2(abs / 2) * 12);
+  return 16 + Math.log2(r / 2) * 12;
+}
+
+/**
+ * XYZ座標(AU)をシーン座標に変換する
+ * 距離に対してスケールを適用し、方向ベクトルは保持する
+ */
+export function auToSceneVec(x, y, z) {
+  const r = Math.sqrt(x * x + y * y + z * z);
+  if (r < 1e-10) return { sx: 0, sy: 0, sz: 0 };
+  const scaled = scaleRadius(r);
+  const factor = scaled / r;
+  return {
+    sx: x * factor,
+    sy: z * factor,  // ecliptic Z -> scene Y (up)
+    sz: y * factor,  // ecliptic Y -> scene Z (depth)
+  };
 }
 
 // 天体の色と表示サイズ

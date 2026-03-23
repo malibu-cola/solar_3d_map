@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { loadPlanets, loadComets } from './loader.js';
-import { BODY_CONFIG, COMET_COLOR, ORBIT_COLOR, auToScene } from './constants.js';
+import { BODY_CONFIG, COMET_COLOR, ORBIT_COLOR, auToSceneVec } from './constants.js';
 import { createOrbitLine, createCometOrbitLine, getPlanetScenePosition, getCometScenePosition } from './orbit.js';
 import { showInfoPanel } from './ui.js';
 
@@ -85,9 +85,7 @@ export async function buildSolarSystem(targetScene) {
       material = new THREE.MeshStandardMaterial({ color: config.color, roughness: 0.7 });
     }
     const mesh = new THREE.Mesh(geometry, material);
-    const sx = auToScene(body.x);
-    const sy = auToScene(body.z);
-    const sz = auToScene(body.y);
+    const { sx, sy, sz } = auToSceneVec(body.x, body.y, body.z);
     mesh.position.set(sx, sy, sz);
     mesh.userData = { bodyData: body, type: 'planet' };
     targetScene.add(mesh);
